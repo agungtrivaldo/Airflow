@@ -27,6 +27,7 @@ services:
     volumes:
       - ./dags:/opt/airflow/dags
       - ./airflow_logs:/opt/airflow/logs
+      - ./sql:/opt/airflow/sql
       - /var/run/docker.sock:/var/run/docker.sock
     command: airflow webserver
 
@@ -42,6 +43,7 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       # _PIP_ADDITIONAL_REQUIREMENTS: minio apache-airflow-providers-docker==4.0.0
     volumes:
+      - ./sql:/opt/airflow/sql
       - ./dags:/opt/airflow/dags
       - ./airflow_logs:/opt/airflow/logs
       - /var/run/docker.sock:/var/run/docker.sock
