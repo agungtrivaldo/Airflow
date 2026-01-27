@@ -1,5 +1,8 @@
 INSERT INTO dim_customer (id, name)
-VALUES (%s, %s)
+SELECT DISTINCT
+    c.id,
+    c.name
+FROM customers c
 ON CONFLICT (id)
 DO UPDATE SET
-  name = EXCLUDED.name;
+    name = EXCLUDED.name;
