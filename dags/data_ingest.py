@@ -30,7 +30,7 @@ with DAG(
         dwh = PostgresHook("data_warehouse")
         sql = """
         INSERT INTO dim_date (id, date, month, quater_of_year, year, is_weekend)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        VALUES %s
         ON CONFLICT (id)
         DO UPDATE SET
             date = EXCLUDED.date,
