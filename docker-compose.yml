@@ -12,3 +12,37 @@ services:
       - "5432:5432"
     volumes:
       - ./init:/docker-entrypoint-initdb.d
+  airflow:
+    image: apache/airflow:2.9.1
+    container_name: airflow-webserver
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor          # Webserver pakai SequentialExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AIRFLOW__CORE__FERNET_KEY: 'IDuTBGUhBX87tgM9ez-3bQXk8ciMOJPnRhgSf5c_HIs='
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./airflow_logs:/opt/airflow/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: airflow webserver
+
+  airflow-scheduler:
+    image: apache/airflow:2.9.1
+    container_name: airflow-scheduler
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor                    # Scheduler tetap LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AIRFLOW__CORE__FERNET_KEY: 'IDuTBGUhBX87tgM9ez-3bQXk8ciMOJPnRhgSf5c_HIs='
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      # _PIP_ADDITIONAL_REQUIREMENTS: minio apache-airflow-providers-docker==4.0.0
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./airflow_logs:/opt/airflow/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: airflow scheduler
