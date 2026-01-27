@@ -30,9 +30,18 @@ with DAG(
     # DIM DATE
     # ======================
     @task
-    def upsert_dim_date():
+    def upsert_dim_customer():
+        oltp = PostgresHook("data_ops")
         dwh = PostgresHook("data_warehouse")
-        dwh.run(load_sql("dim_date_upsert.sql"))
+
+        # Ambil data customer dari OLTP
+        customers = oltp.get_records("SELECT id, name FROM customers")
+
+        sql = load_sql("dim_customer_upsert.sql")
+
+        # Jalankan UPSERT satu-satu
+        for row in customers:
+            dwh.run(sql, parameters=row)
 
     # ======================
     # DIM CUSTOMER
