@@ -18,7 +18,7 @@ def load_sql(filename):
     return (SQL_DIR / filename).read_text()
 
 with DAG(
-    dag_id="data ingest",
+    dag_id="data_ingest",
     start_date=datetime(2024, 1, 1, tzinfo=local_tz),
     schedule="0 7 * * *",
     catchup=False,
