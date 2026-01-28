@@ -97,9 +97,9 @@ with DAG(
 
         records = oltp.get_records("""
             SELECT
-                order.order_number,
-                order.customer_id,
-                order.date AS order_date,
+                orders.order_number,
+                orders.customer_id,
+                orders.date AS order_date,
                 invoice.invoice_number,
                 invoice.date AS invoice_date,
                 payment.payment_number,
@@ -107,11 +107,11 @@ with DAG(
                 SUM(order_line.quantity),
                 SUM(order_line.usd_amount)
             FROM orders order
-            JOIN order_lines order_line ON order.order_number = order_line.order_number
-            LEFT JOIN invoices invoice ON order.order_number = invoice.order_number
+            JOIN order_lines order_line ON orders.order_number = order_line.order_number
+            LEFT JOIN invoices invoice ON orders.order_number = invoice.order_number
             LEFT JOIN payments payment ON invoice.invoice_number = payment.invoice_number
             GROUP BY
-                order.order_number, order.customer_id, order.date,
+                orders.order_number, orders.customer_id, orders.date,
                 invoice.invoice_number, invoice.date,
                 payment.payment_number, payment.date
         """)
