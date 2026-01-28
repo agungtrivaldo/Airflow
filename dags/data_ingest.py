@@ -106,7 +106,7 @@ with DAG(
                 payment.date AS payment_date,
                 SUM(order_line.quantity),
                 SUM(order_line.usd_amount)
-            FROM orders order
+            FROM orders
             JOIN order_lines order_line ON orders.order_number = order_line.order_number
             LEFT JOIN invoices invoice ON orders.order_number = invoice.order_number
             LEFT JOIN payments payment ON invoice.invoice_number = payment.invoice_number
